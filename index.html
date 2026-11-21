@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A 3D concept mockup of edge ML and per-business knowledge graphs making explainable decisions across credit, sports betting, insurance, retail and logistics. Mock data.">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+body{margin:0;font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Edge Decision Graph</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+/* Layout: full-height 3D stage (edge devices → per-business graph → business cloud + shared ontology) with an operations rail on the right; stacks on phones */
+:root{
+  --bg:#EEF1F6; --panel:#FFFFFF; --panel-2:#F5F7FA; --fg:#141B26; --muted:#5A6576; --line:#D8DEE7; --shadow:rgba(20,27,38,.10);
+  --accent:#6A45DB; --on-accent:#FFFFFF; --accent-soft:#ECE6FF;
+  --scene-bg:#E8ECF2; --scene-grid:#C9D1DC; --scene-grid-2:#DCE2EA; --district:#DDE3EB; --district-edge:#B5C0CE; --road:#CBD3DE;
+  --device:#B7C1CE; --screen:#8D99A9; --edge:#A3AEBF; --edge-hot:#141B26;
+  --t-entity:#3470E0; --t-event:#C9448A; --t-signal:#0C968D; --t-model:#6A45DB; --t-rule:#647389; --t-decision:#1D2633;
+  --o-approve:#178F5A; --o-limit:#B57405; --o-decline:#D23A40;
+  --font-display:"Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body:"Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-data:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1017; --panel:#111823; --panel-2:#0E141D; --fg:#E6EBF2; --muted:#8E9AAC; --line:#233042; --shadow:rgba(0,0,0,.45);
+    --accent:#A48BFF; --on-accent:#140E2A; --accent-soft:#241D42;
+    --scene-bg:#090E15; --scene-grid:#1B2431; --scene-grid-2:#121A25; --district:#111A25; --district-edge:#2A3646; --road:#1A2330;
+    --device:#2D3949; --screen:#3E4B5D; --edge:#3A475A; --edge-hot:#F2F5FA;
+    --t-entity:#5D93FF; --t-event:#F06AAB; --t-signal:#2BC6BA; --t-model:#A48BFF; --t-rule:#98A6BB; --t-decision:#E8ECF3;
+    --o-approve:#3DD68C; --o-limit:#F5B83D; --o-decline:#FF6B70;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1017; --panel:#111823; --panel-2:#0E141D; --fg:#E6EBF2; --muted:#8E9AAC; --line:#233042; --shadow:rgba(0,0,0,.45);
+  --accent:#A48BFF; --on-accent:#140E2A; --accent-soft:#241D42;
+  --scene-bg:#090E15; --scene-grid:#1B2431; --scene-grid-2:#121A25; --district:#111A25; --district-edge:#2A3646; --road:#1A2330;
+  --device:#2D3949; --screen:#3E4B5D; --edge:#3A475A; --edge-hot:#F2F5FA;
+  --t-entity:#5D93FF; --t-event:#F06AAB; --t-signal:#2BC6BA; --t-model:#A48BFF; --t-rule:#98A6BB; --t-decision:#E8ECF3;
+  --o-approve:#3DD68C; --o-limit:#F5B83D; --o-decline:#FF6B70;
+  color-scheme:dark;
+}
+
+html,body{height:100%}
+body{background:var(--bg); color:var(--fg); font:14px/1.45 var(--font-body)}
+*{box-sizing:border-box}
+h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+#app{display:grid; grid-template-columns:minmax(0,1fr) 348px; height:100%}
+#stage{position:relative; min-width:0; overflow:hidden; background:var(--scene-bg)}
+#scene{position:absolute; inset:0}
+#scene canvas{display:block; touch-action:none}
+.labels{position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:0}
+.hud-top,.hud-bottom{z-index:2}
+
+.hud-top{position:absolute; top:16px; left:16px; right:16px; display:flex; flex-direction:column; gap:10px; pointer-events:none; max-width:640px}
+.hud-top > *{pointer-events:auto}
+.brand{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.brand h1{font-size:22px; font-weight:600; letter-spacing:-.01em}
+.badge{font:500 10.5px var(--font-data); text-transform:uppercase; letter-spacing:.08em; padding:3px 7px; border-radius:4px; border:1px dashed var(--muted); color:var(--muted)}
+.thesis{margin:0; color:var(--muted); max-width:60ch; font-size:13.5px}
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+.chip{font:500 12.5px var(--font-body); padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--panel); color:var(--fg); cursor:pointer}
+.chip:hover{border-color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--fg); color:var(--bg); border-color:var(--fg)}
+.hint{font:400 11.5px var(--font-data); color:var(--muted)}
+
+.btn{display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:7px; border:1px solid var(--line); background:var(--panel-2); color:var(--fg); cursor:pointer; font-size:12.5px; font-weight:500}
+.btn:hover{border-color:var(--muted)}
+.btn:disabled{opacity:.4; cursor:default}
+.btn-primary{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+.btn-primary:hover{border-color:var(--fg)}
+.btn-ghost{background:transparent}
+.btn-ghost.on{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+.walk-btn{height:32px; padding:0 14px; font-weight:600; white-space:nowrap}
+.walk-btn svg{flex:none}
+.icon-btn{display:grid; place-items:center; width:26px; height:26px; border-radius:6px; border:0; background:transparent; color:var(--muted); cursor:pointer}
+.icon-btn:hover{background:var(--panel-2); color:var(--fg)}
+
+.hud-bottom{position:absolute; left:16px; right:16px; bottom:16px; display:flex; flex-direction:column; gap:8px; align-items:flex-start; pointer-events:none}
+.hud-bottom > *{pointer-events:auto}
+.controls{display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:6px}
+.speed{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); padding-left:4px}
+.speed output{font-family:var(--font-data); color:var(--fg); min-width:3.6ch; font-variant-numeric:tabular-nums}
+#speed{width:96px; accent-color:var(--accent)}
+.frozen-note{font:400 11px var(--font-data); color:var(--accent); padding:0 6px}
+
+.rail{display:flex; gap:4px; list-style:none; margin:0; padding:0; flex-wrap:wrap}
+.rail li{display:flex; align-items:center; gap:6px; font:500 11.5px var(--font-data); padding:5px 8px; border-radius:6px; background:var(--panel); border:1px solid var(--line); color:var(--muted); transition:background .2s, color .2s, border-color .2s}
+.rail .n{opacity:.7}
+.rail .c{min-width:2ch; text-align:center; padding:0 4px; border-radius:4px; background:var(--panel-2); font-variant-numeric:tabular-nums}
+.rail li.active{color:var(--fg); border-color:var(--accent)}
+.rail li.active .c{background:var(--accent); color:var(--on-accent)}
+
+/* walkthrough card (System Atlas pattern) */
+.tourcard{width:min(480px,100%); background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px 12px; box-shadow:0 10px 30px var(--shadow)}
+.sc-head{display:flex; align-items:center; gap:8px}
+.sc-name{font:600 11px var(--font-body); letter-spacing:.06em; text-transform:uppercase; color:var(--accent)}
+.sc-count{font-size:12px; color:var(--muted); margin-left:auto; font-variant-numeric:tabular-nums}
+.sc-progress{height:2px; margin:8px 0 0; border-radius:1px; background:var(--panel-2); overflow:hidden}
+.sc-progress span{display:block; height:100%; background:var(--accent); transform-origin:left; animation:fill linear forwards}
+.sc-progress.paused span{animation-play-state:paused}
+@keyframes fill{from{transform:scaleX(0)} to{transform:scaleX(1)}}
+.sc-title{font-size:19px; line-height:1.25; margin:8px 0 6px; letter-spacing:-.01em}
+.sc-text{margin:0; font-size:14.5px; line-height:1.5; max-width:62ch}
+details.more{margin-top:8px; font-size:12.5px; color:var(--muted)}
+details.more summary{cursor:pointer; font-size:12px}
+details.more p{margin:6px 0 0; color:var(--fg); opacity:.85}
+.sc-foot{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px; flex-wrap:wrap}
+.sc-btns{display:flex; gap:4px}
+.dots{display:flex; gap:5px; flex-wrap:wrap}
+.dot{width:9px; height:9px; border-radius:50%; border:0; padding:0; background:var(--line); cursor:pointer}
+.dot.past{background:var(--accent); opacity:.45}
+.dot.on{background:var(--accent); transform:scale(1.25)}
+
+#tooltip{position:absolute; pointer-events:none; background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:5px 8px; font-size:12px; box-shadow:0 4px 14px var(--shadow); white-space:nowrap; z-index:5}
+#tooltip b{font-weight:600}
+#tooltip span{color:var(--muted); font-family:var(--font-data); font-size:11px; margin-left:6px}
+#nogl{position:absolute; inset:0; display:grid; place-items:center; padding:24px; text-align:center; color:var(--muted); background:var(--scene-bg)}
+#nogl p{max-width:44ch; margin:0}
+
+/* side rail */
+#side{border-left:1px solid var(--line); background:var(--panel); overflow-y:auto; padding:18px 16px; display:flex; flex-direction:column; gap:22px; min-width:0}
+#side h2{font:500 11px var(--font-data); text-transform:uppercase; letter-spacing:.09em; color:var(--muted); margin-bottom:10px}
+.h2row{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+.linkbtn{background:none; border:0; padding:0; color:var(--accent); cursor:pointer; font-size:12px; font-weight:500}
+.kpis{display:grid; grid-template-columns:1fr 1fr; gap:14px 12px}
+.kpi{display:flex; flex-direction:column; gap:2px; min-width:0}
+.k-l{font-size:12px; color:var(--muted)}
+.k-v{font:600 24px/1.1 var(--font-display); font-variant-numeric:tabular-nums; letter-spacing:-.01em}
+.k-v small{font-size:13px; font-weight:500; color:var(--muted); margin-left:2px}
+.k-s{font:400 11px var(--font-data); color:var(--muted)}
+
+.trace{background:var(--panel-2); border:1px solid var(--line); border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:10px; transition:border-color .3s, box-shadow .3s}
+.trace.spot{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+.trace h2{margin-bottom:0 !important}
+.t-head{display:flex; flex-wrap:wrap; gap:4px 10px; align-items:baseline}
+.t-head strong{font:600 15px var(--font-display)}
+.t-head span{color:var(--muted); font-size:12px}
+.t-head time{margin-left:auto; font:400 11px var(--font-data); color:var(--muted)}
+.t-steps{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px}
+.t-steps li{display:grid; grid-template-columns:78px minmax(0,1fr); gap:8px; font-size:12.5px}
+.t-steps .k{font:500 10.5px var(--font-data); text-transform:uppercase; letter-spacing:.06em; color:var(--muted); padding-top:2px}
+.t-steps .v{min-width:0}
+.t-steps .mono{font-family:var(--font-data); font-size:11.5px}
+.t-steps .dim{color:var(--muted)}
+.pill{display:inline-flex; align-items:center; gap:6px; align-self:flex-start; font:600 13px var(--font-display); padding:5px 10px; border-radius:6px; border:1.5px solid currentColor}
+.pill::before{content:""; width:8px; height:8px; border-radius:2px; background:currentColor}
+.o-approve{color:var(--o-approve)} .o-limit{color:var(--o-limit)} .o-decline{color:var(--o-decline)}
+.reason{margin:0; font-size:13px; color:var(--fg)}
+.node-desc{margin:0; color:var(--muted); font-size:12.5px}
+.nbrs{display:flex; flex-wrap:wrap; gap:4px}
+.nbrs span{font:400 11px var(--font-data); padding:2px 6px; border-radius:4px; border:1px solid var(--line); background:var(--panel)}
+
+.legend{display:grid; grid-template-columns:1fr 1fr; gap:7px 12px; list-style:none; margin:0; padding:0; font-size:12.5px}
+.legend li{display:flex; align-items:center; gap:8px; min-width:0}
+.legend svg{flex:none}
+.legend.wide{grid-template-columns:1fr; margin-top:10px}
+.legend-note{margin:10px 0 0; font-size:12px; color:var(--muted)}
+.bands{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px}
+.bands .pill{font-size:11.5px; padding:3px 8px}
+
+.log{list-style:none; margin:0; padding:0; display:flex; flex-direction:column}
+.log li{display:grid; grid-template-columns:58px minmax(0,1fr); gap:8px; padding:6px 0; border-top:1px solid var(--line); font-size:12px}
+.log li:first-child{border-top:0}
+.log time{font:400 11px var(--font-data); color:var(--muted); padding-top:1px; font-variant-numeric:tabular-nums}
+.log .ind{color:var(--muted)}
+.log .sync{color:var(--accent)}
+
+/* 3D labels */
+.lbl-district{font:600 12.5px var(--font-display); color:var(--fg); background:var(--panel); border:1px solid var(--line); padding:4px 9px; border-radius:6px; white-space:nowrap; text-align:center; box-shadow:0 2px 8px var(--shadow); transition:opacity .3s}
+.lbl-district small{display:block; font:400 10.5px var(--font-body); color:var(--muted)}
+.lbl-node{font:500 10.5px var(--font-data); color:var(--fg); background:var(--panel); padding:1px 5px; border-radius:4px; white-space:nowrap; opacity:.92}
+.lbl-run{font:500 11px var(--font-data); padding:2px 7px; border-radius:5px; background:var(--panel); border:1px solid var(--line); white-space:nowrap; color:var(--fg); box-shadow:0 2px 8px var(--shadow)}
+.lbl-run.esc{border-color:var(--accent); color:var(--accent)}
+.lbl-run.o-approve{border-color:var(--o-approve)} .lbl-run.o-limit{border-color:var(--o-limit)} .lbl-run.o-decline{border-color:var(--o-decline)}
+.lbl-cloud{font:600 11.5px var(--font-display); color:var(--t-model); background:var(--panel); border:1px solid var(--t-model); padding:3px 8px; border-radius:6px; white-space:nowrap; text-align:center}
+.lbl-cloud small{display:block; font:400 10px var(--font-body); color:var(--muted)}
+.lbl-hub{font:600 12.5px var(--font-display); color:var(--fg); background:var(--panel); border:1px solid var(--line); padding:4px 9px; border-radius:6px; white-space:nowrap; text-align:center}
+.lbl-hub small{display:block; font:400 10.5px var(--font-body); color:var(--muted)}
+.lbl-boundary{font:500 11px var(--font-data); color:var(--accent); white-space:nowrap; background:var(--panel); padding:2px 7px; border-radius:4px; border:1px dashed var(--accent)}
+
+@media (max-width:820px){
+  html,body{height:auto}
+  #app{display:block; height:auto}
+  #stage{height:78vh; min-height:520px}
+  #side{border-left:0; border-top:1px solid var(--line); overflow:visible; padding-block:20px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px))}
+  .thesis,.hint{display:none}
+  .brand h1{font-size:19px}
+  .rail .t{display:none}
+  #speed{width:72px}
+  .sc-text{font-size:13.5px}
+  .tourcard details.more{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .rail li,.trace,.lbl-district{transition:none}
+  .sc-progress span{animation:none; transform:scaleX(1); opacity:.5}
+}
+</style>
+
+</head>
+<body>
+<div id="app">
+  <section id="stage" aria-label="3D simulation">
+    <div id="scene"></div>
+    <header class="hud-top">
+      <div class="brand">
+        <h1>Edge Decision Graph</h1><span class="badge">Mock data</span>
+        <button id="btnWalk" class="btn btn-primary walk-btn" type="button" title="A guided tour of the whole system, end to end (W)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg>
+          <span id="walkLabel">Walk me through</span>
+        </button>
+      </div>
+      <p class="thesis">Five businesses build their knowledge graphs from one shared set of node types. Small models on each device handle the fast calls, regulated decisions go to each business's own approved model, and the graph records why every decision was made.</p>
+      <nav class="chips" id="chips" aria-label="Choose a business"></nav>
+      <span class="hint">Drag to orbit · scroll to zoom · click any node · W walkthrough</span>
+    </header>
+    <div class="hud-bottom">
+      <div class="tourcard" id="tourCard" role="region" aria-live="polite" aria-label="Walkthrough" hidden>
+        <div class="sc-head">
+          <span class="sc-name">Walkthrough</span>
+          <span class="sc-count" id="scCount"></span>
+          <button class="icon-btn" id="tourX" type="button" aria-label="End walkthrough (Esc)" title="End walkthrough (Esc)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="sc-progress" id="scProg" aria-hidden="true"></div>
+        <h3 class="sc-title" id="scTitle"></h3>
+        <p class="sc-text" id="scText"></p>
+        <details class="more" id="scMore"><summary>For engineers</summary><p id="scTech"></p></details>
+        <div class="sc-foot">
+          <div class="dots" id="scDots" role="tablist" aria-label="Walkthrough steps"></div>
+          <div class="sc-btns">
+            <button class="btn btn-ghost" id="scPrev" type="button" aria-label="Previous step (←)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <button class="btn btn-ghost" id="scAuto" type="button" title="Auto-advance (Space)"></button>
+            <button class="btn btn-primary" id="scNext" type="button"></button>
+          </div>
+        </div>
+      </div>
+      <ol class="rail" id="rail" aria-label="Decision lifecycle, with how many decisions are in each stage">
+        <li data-n="1"><span class="n">1</span><span class="t">Sense</span><span class="c">0</span></li>
+        <li data-n="2"><span class="n">2</span><span class="t">Infer on device</span><span class="c">0</span></li>
+        <li data-n="3"><span class="n">3</span><span class="t">Graph lookup</span><span class="c">0</span></li>
+        <li data-n="4"><span class="n">4</span><span class="t">Escalate</span><span class="c">0</span></li>
+        <li data-n="5"><span class="n">5</span><span class="t">Act</span><span class="c">0</span></li>
+        <li data-n="6"><span class="n">6</span><span class="t">Learn</span><span class="c">0</span></li>
+      </ol>
+      <div class="controls" role="group" aria-label="Simulation controls">
+        <button id="btnPlay" class="btn" type="button">Pause</button>
+        <label class="speed" for="speed">Speed <output id="speedOut" for="speed">1.0×</output></label>
+        <input id="speed" type="range" min="0.25" max="2.5" step="0.25" value="1">
+        <span class="frozen-note" id="frozen" hidden>Walkthrough · background paused</span>
+      </div>
+    </div>
+    <div id="tooltip" hidden></div>
+    <div id="nogl" hidden><p>The 3D view needs WebGL, which isn't available in this browser. Try a desktop browser with hardware acceleration turned on.</p></div>
+  </section>
+
+  <aside id="side">
+    <section aria-labelledby="h-kpi">
+      <h2 id="h-kpi">Right now</h2>
+      <div class="kpis">
+        <div class="kpi"><span class="k-l">Decisions made</span><span class="k-v" id="kDec">0</span><span class="k-s">in this simulation</span></div>
+        <div class="kpi"><span class="k-l">Median edge latency</span><span class="k-v" id="kLat">–</span><span class="k-s">model runs on device</span></div>
+        <div class="kpi"><span class="k-l">Decided on device</span><span class="k-v" id="kEdge">–</span><span class="k-s" id="kEsc">sent to cloud –</span></div>
+        <div class="kpi"><span class="k-l">Raw data sent up</span><span class="k-v">0<small>B</small></span><span class="k-s" id="kVer">learning round 0</span></div>
+      </div>
+    </section>
+
+    <section class="trace" id="trace"></section>
+
+    <section aria-labelledby="h-legend">
+      <h2 id="h-legend">Shared node types</h2>
+      <ul class="legend" id="legend"></ul>
+      <div class="bands" aria-label="Decision colours">
+        <span class="pill o-approve">Low score</span><span class="pill o-limit">Middle band</span><span class="pill o-decline">High score</span>
+      </div>
+      <ul class="legend wide" aria-label="Above the privacy boundary">
+        <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x="2.5" y="5" width="13" height="8" rx="4" style="fill:var(--t-model)"/></svg>Business cloud model: one per business, never shared</li>
+        <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><polygon points="9,1.5 15.5,5.2 15.5,12.8 9,16.5 2.5,12.8 2.5,5.2" style="fill:none;stroke:var(--accent);stroke-width:1.5"/></svg>Shared ontology: node types only, no data, no model</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="h-log">
+      <h2 id="h-log">Event log</h2>
+      <ol class="log" id="log"></ol>
+    </section>
+  </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/renderers/CSS2DRenderer.js"></script>
+<script>
+(function(){
+"use strict";
+const $ = s => document.querySelector(s);
+const rootStyle = () => getComputedStyle(document.documentElement);
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+const ease = p => p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
+const fmt = s => s.toFixed(2);
+const fmtTime = d => d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+
+/* ---------------- data ---------------- */
+const TYPES = {
+  entity:  {label:"Entity",        desc:"A person or thing the business knows about.", shape:"circle-l"},
+  event:   {label:"Event",         desc:"Something that just happened.", shape:"circle-m"},
+  signal:  {label:"Signal",        desc:"A feature the edge device computes from raw data.", shape:"circle-s"},
+  model:   {label:"Edge model",    desc:"A small model that runs on the device itself.", shape:"hex"},
+  rule:    {label:"Rule / policy", desc:"A regulation or business rule the decision must respect.", shape:"diamond"},
+  decision:{label:"Decision",      desc:"The action taken. Its colour shows the score band.", shape:"square"}
+};
+const BANDS = ["approve","limit","decline"];
+
+const INDUSTRIES = [
+ { id:"credit", name:"Credit", device:"Mobile app / card terminal",
+   cloud:"Credit underwriting", cloudSub:"validated model · Credit data only",
+   layout:[["phone",-6,3],["phone",-3,6.5],["terminal",0,8],["phone",3,6.5],["phone",6,3],["terminal",0,-7]],
+   entities:["Applicant","Merchant"],
+   sc:[
+    { event:"Card swipe", ent:[0,1],
+      signals:[["Device fingerprint",["matches 14 past sessions","new phone, same SIM","unknown device on a VPN"]],
+               ["Merchant category",["grocery","electronics","gift cards"]]],
+      model:"Fraud check", rule:"Card-network fraud rules",
+      dec:["Approve purchase","Ask for one-time code","Decline and alert"],
+      why:["The device and merchant match this customer's normal pattern.",
+           "A new phone is buying electronics, so the app asks for a one-time code first.",
+           "An unknown device on a VPN is buying gift cards, a common fraud pattern. The card is paused and the customer is alerted."]},
+    { event:"Credit-line request", ent:[0], mustEscalate:true,
+      signals:[["Cash-flow pattern",["steady salary deposits","irregular income","overdrawn 3 of last 6 weeks"]],
+               ["Bureau tradeline",["no missed payments","1 late payment","2 recent defaults"]]],
+      model:"Pre-check: identity + prefill", rule:"Fair-lending reason codes",
+      dec:["Approve $4,000 line","Approve $1,500 line","Decline with reasons"],
+      why:["The underwriting model finds salary deposits cover the repayments with room to spare.",
+           "Income is irregular, so underwriting offers a smaller line. The reason code is stored for the notice.",
+           "Recent defaults and overdrafts fail the affordability check. Reason codes for the adverse-action notice are stored."]}
+   ]},
+ { id:"betting", name:"Sports Betting", device:"Betting app / venue kiosk",
+   cloud:"Trading desk model", cloudSub:"Sports Betting data only",
+   layout:[["phone",-6,3],["phone",-2.5,6.5],["kiosk",1.5,7.5],["phone",5,5],["kiosk",-1,-7],["phone",6.5,0]],
+   entities:["Bettor","Market: 4th-qtr spread"],
+   sc:[
+    { event:"Bet slip", ent:[0],
+      signals:[["Session velocity",["3 bets in 40 min","11 bets in 20 min","26 bets in 15 min"]],
+               ["Stake change",["in line with history","4× usual stake","9× usual, right after a loss"]]],
+      model:"Safer-gambling score", rule:"Geofence + self-exclusion",
+      dec:["Accept bet","Cap stake at $50","Hold bet, offer cool-off"],
+      why:["Inside a licensed area, and the stake and pace match this bettor's usual pattern.",
+           "The stake jumped 4× in a fast session, so it is capped at $50.",
+           "Chasing losses at high speed matches the risk profile. The bet is held and a 30-minute cool-off is offered."]},
+    { event:"Touchdown (live feed)", ent:[1,0],
+      signals:[["Odds movement",["line steady","line moved 1.5 pts","line moved 7 pts"]],
+               ["Liability exposure",["$12k, balanced","$85k, one-sided","$310k, one-sided"]]],
+      model:"In-play pricing", rule:"Max liability per market",
+      dec:["Reopen market","Reprice, then reopen","Keep market suspended"],
+      why:["The play barely moved the line, so the market reopens at once.",
+           "The line moved 1.5 points. New prices go live 2 seconds after the play.",
+           "Exposure is one-sided after a 7-point swing, so the market stays closed until a trader reviews it."]}
+   ]},
+ { id:"insurance", name:"Insurance", device:"Telematics box in vehicle",
+   cloud:"Claims review model", cloudSub:"Insurance data only",
+   moving:{kind:"car", n:5, r:8, w:.22},
+   entities:["Policyholder","Vehicle"],
+   sc:[
+    { event:"Trip ended", ent:[0,1],
+      signals:[["Hard braking",["0 per 100 mi","4 per 100 mi","11 per 100 mi"]],
+               ["Speed over limit",["2% of trip","9% of trip","21% of trip"]]],
+      model:"Driving risk", rule:"Allowed rating factors",
+      dec:["Safe-driver discount","Keep current rate","Send driving-risk notice"],
+      why:["Smooth braking and speeds within limits over 30 days earn the discount.",
+           "Driving is average for this area, so the rate stays the same.",
+           "Frequent hard braking and speeding raise the risk. The driver gets a notice with tips before renewal."]},
+    { event:"Collision alert", ent:[1,0],
+      signals:[["Impact force",["0.9 g","2.4 g","4.6 g"]],
+               ["Airbag sensor",["not deployed","not deployed","deployed"]]],
+      model:"Claim triage", rule:"Claim response time",
+      dec:["Fast-track claim","Send an adjuster","Call emergency services"],
+      why:["A minor bump with photos from the app, so the claim is paid without an adjuster.",
+           "Impact force suggests real damage, so an adjuster calls within the hour.",
+           "A hard impact with airbag deployment triggers an emergency call before anything else."]}
+   ]},
+ { id:"retail", name:"Retail", device:"Shelf sensor / smart camera",
+   cloud:"Store ops model", cloudSub:"Retail data only",
+   shelves:true,
+   entities:["Shopper (anonymous)","SKU: oat milk 1 L"],
+   sc:[
+    { event:"Item picked up", ent:[0,1],
+      signals:[["Dwell time",["42 s at shelf","12 s at shelf","3 s at shelf"]],
+               ["Basket mix",["breakfast items","single item","already-discounted items"]]],
+      model:"Next-best offer", rule:"No facial recognition",
+      dec:["Show 15% bundle offer","Show loyalty points","No offer"],
+      why:["The shopper lingered and the basket fits a breakfast bundle. No face is stored, only an anonymous session.",
+           "Interest is moderate, so the shelf screen shows points instead of a discount.",
+           "The basket is already discounted and the promo budget is nearly spent, so no offer is shown."]},
+    { event:"Shelf scan", ent:[1],
+      signals:[["Stock level",["64% full","18% full","empty facing"]],
+               ["Foot traffic",["quiet","lunch rush","rush, 3 checkouts open"]]],
+      model:"Restock forecast", rule:"Max 20 min out of chiller",
+      dec:["No action","Restock within 30 min","Restock now, page staff"],
+      why:["The shelf will last until the next scheduled restock.",
+           "At this pace the shelf empties in about 40 minutes, so a restock task is queued.",
+           "The facing is empty at rush hour, so the nearest staff member is paged."]}
+   ]},
+ { id:"logistics", name:"Logistics", device:"Truck gateway",
+   cloud:"Fleet ops model", cloudSub:"Logistics data only",
+   moving:{kind:"truck", n:4, r:8, w:.16},
+   entities:["Shipment A-2207 (vaccines)","Truck 14"],
+   sc:[
+    { event:"Traffic incident ahead", ent:[0,1],
+      signals:[["GPS position",["on planned route","4 mi before incident","inside closure zone"]],
+               ["Driver hours left",["6 h 10 m","1 h 40 m","0 h 25 m"]]],
+      model:"ETA model", rule:"Hours-of-service limit",
+      dec:["Stay on route","Reroute via I-80","Swap driver at depot"],
+      why:["The delay is under 10 minutes, so the plan holds.",
+           "The incident adds 48 minutes. The I-80 route arrives before the driver's hours run out.",
+           "The driver can't finish legally, so the load transfers at the next depot."]},
+    { event:"Engine fault code", ent:[1,0],
+      signals:[["Engine temperature",["92 °C, normal","104 °C, rising","118 °C, critical"]],
+               ["Cargo temperature",["5.0 °C","7.4 °C","9.1 °C"]]],
+      model:"Failure risk", rule:"Cold chain 2–8 °C",
+      dec:["Log and continue","Book service at next stop","Pull over, send backup reefer"],
+      why:["The code is minor and both temperatures are normal.",
+           "Engine temperature is rising, so a service slot is booked at the next stop.",
+           "Cargo is above 8 °C and the engine is overheating, so a backup refrigerated truck is sent."]}
+   ]}
+];
+const byId = Object.fromEntries(INDUSTRIES.map(D=>[D.id,D]));
+
+/* ---------------- UI scaffolding ---------------- */
+const chipsEl = $("#chips");
+[{id:"all",name:"All businesses"}].concat(INDUSTRIES).forEach(D=>{
+  const b=document.createElement("button"); b.type="button"; b.className="chip"; b.dataset.id=D.id; b.textContent=D.name;
+  b.setAttribute("aria-pressed", D.id==="all"?"true":"false"); chipsEl.appendChild(b);
+});
+const SHAPE_SVG = {
+  "circle-l":c=>`<circle cx="9" cy="9" r="7" style="fill:${c}"/>`,
+  "circle-m":c=>`<circle cx="9" cy="9" r="5.5" style="fill:${c}"/>`,
+  "circle-s":c=>`<circle cx="9" cy="9" r="4.2" style="fill:${c}"/>`,
+  "hex":c=>`<polygon points="9,1.5 15.5,5.2 15.5,12.8 9,16.5 2.5,12.8 2.5,5.2" style="fill:${c}"/>`,
+  "diamond":c=>`<polygon points="9,1.5 16.5,9 9,16.5 1.5,9" style="fill:${c}"/>`,
+  "square":c=>`<rect x="3" y="3" width="12" height="12" rx="1.5" style="fill:${c}"/>`
+};
+$("#legend").innerHTML = Object.entries(TYPES).map(([k,t])=>
+  `<li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">${SHAPE_SVG[t.shape](`var(--t-${k})`)}</svg>${t.label}</li>`).join("");
+
+/* ---------------- three.js setup ---------------- */
+const host = $("#scene"), stageEl = $("#stage");
+let renderer;
+try {
+  if (typeof THREE === "undefined") throw new Error("three.js did not load");
+  renderer = new THREE.WebGLRenderer({antialias:true});
+} catch(e){ $("#nogl").hidden=false; return; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+host.appendChild(renderer.domElement);
+const labelRenderer = new THREE.CSS2DRenderer();
+labelRenderer.domElement.className = "labels";
+host.appendChild(labelRenderer.domElement);
+
+const V = (x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
+const tmpV = V(), tmpV2 = V(), tmpC = new THREE.Color();
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, 1, .5, 700);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.dampingFactor = .08;
+controls.maxPolarAngle = Math.PI*.495; controls.minDistance = 10; controls.maxDistance = 230;
+
+const PKEYS = ["scene-bg","scene-grid","scene-grid-2","district","district-edge","road","device","screen","edge","edge-hot","accent",
+  "t-entity","t-event","t-signal","t-model","t-rule","t-decision","o-approve","o-limit","o-decline"];
+const P = {}; PKEYS.forEach(k=>P[k]=new THREE.Color());
+function readPalette(){ const cs=rootStyle(); PKEYS.forEach(k=>{ const v=cs.getPropertyValue("--"+k).trim(); if(v) P[k].set(v); }); }
+readPalette();
+const themed = [];
+function tmat(Kind, key, extra={}){ const m=new Kind(Object.assign({color:P[key].clone()}, extra)); themed.push({m,key}); return m; }
+
+scene.background = P["scene-bg"];
+scene.fog = new THREE.Fog(P["scene-bg"].clone(), 150, 320);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x556070, .95));
+const sun = new THREE.DirectionalLight(0xffffff, .65); sun.position.set(30,70,25); scene.add(sun);
+
+let grid;
+function makeGrid(){
+  if(grid){ scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+  grid = new THREE.GridHelper(260, 52, P["scene-grid"], P["scene-grid-2"]); grid.position.y = -.02; scene.add(grid);
+}
+makeGrid();
+
+const R = 30, ONT = V(0,37,0), BY = 24, CLOUD_Y = 28.5;
+const allNodes = [], allDevices = [], effects = [], nodeMeshes = [];
+const G = {
+  sphere:new THREE.SphereGeometry(1,22,16), ico:new THREE.IcosahedronGeometry(1,0), octa:new THREE.OctahedronGeometry(1,0),
+  box:new THREE.BoxGeometry(1.3,1.3,1.3), particle:new THREE.SphereGeometry(.3,14,10), halo:new THREE.SphereGeometry(.75,14,10),
+  ring:new THREE.RingGeometry(.88,1,64)
+};
+const NODE_STYLE = { entity:[G.sphere,1.0], event:[G.sphere,.62], signal:[G.sphere,.52], model:[G.ico,.95], rule:[G.octa,.8], decision:[G.box,.62] };
+function makeLabel(cls, html){ const el=document.createElement("div"); el.className=cls; el.innerHTML=html; const o=new THREE.CSS2DObject(el); scene.add(o); return o; }
+
+/* ---------------- build businesses ---------------- */
+INDUSTRIES.forEach((D,i)=>{
+  const phi = -Math.PI/2 + i*(2*Math.PI/5) + Math.PI;
+  D.out = V(Math.cos(phi),0,Math.sin(phi));
+  D.tan = V(-Math.sin(phi),0,Math.cos(phi));
+  D.c = D.out.clone().multiplyScalar(R);
+  D.mats = []; D.dimmed = false;
+  const dm = (m, op=1)=>{ m.transparent=true; m.opacity=op; D.mats.push({m,op}); return m; };
+  const local = (x,y,z)=> D.c.clone().addScaledVector(D.tan,x).addScaledVector(D.out,z).setY(y);
+  D.local = local;
+
+  const disc = new THREE.Mesh(new THREE.CircleGeometry(11.5,72), dm(tmat(THREE.MeshBasicMaterial,"district")));
+  disc.rotation.x = -Math.PI/2; disc.position.copy(D.c).setY(.01); scene.add(disc);
+  D.ringMat = dm(new THREE.MeshBasicMaterial({color:P["district-edge"].clone(), side:THREE.DoubleSide}));
+  const edge = new THREE.Mesh(new THREE.RingGeometry(11.35,11.6,96), D.ringMat);
+  edge.rotation.x = -Math.PI/2; edge.position.copy(D.c).setY(.02); scene.add(edge);
+  D.label = makeLabel("lbl-district", `${D.name}<small>${D.device}</small>`);
+  D.label.position.copy(local(0,.4,13.6));
+
+  // devices
+  D.devices = [];
+  const devMat = dm(tmat(THREE.MeshStandardMaterial,"device",{roughness:.7, metalness:.05}));
+  const addDevice = (group, screen, move)=>{
+    const mat = dm(new THREE.MeshStandardMaterial({color:P.screen.clone(), emissive:P.screen.clone(), emissiveIntensity:.15, roughness:.4}));
+    screen.material = mat;
+    const dev = {D, group, screen, mat, glow:0, flash:null, move};
+    scene.add(group); D.devices.push(dev); allDevices.push(dev); return dev;
+  };
+  const box = (w,h,d,mat)=>new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat);
+  const facing = Math.PI/2 - phi;
+  if(D.layout){
+    D.layout.forEach(([kind,x,z])=>{
+      const g = new THREE.Group(); let scr;
+      if(kind==="phone"){ const st=box(.6,.2,.6,devMat); st.position.y=.1; const b=box(.9,1.6,.16,devMat); b.position.y=1.0; scr=box(.74,1.34,.04); scr.position.set(0,1.02,.09); g.add(st,b,scr); }
+      if(kind==="terminal"){ const b=box(1.1,.4,1.3,devMat); b.position.y=.2; scr=box(.86,.55,.05); scr.position.set(0,.75,.1); scr.rotation.x=-.5; const back=box(.95,.65,.1,devMat); back.position.set(0,.72,.04); back.rotation.x=-.5; g.add(b,back,scr); }
+      if(kind==="kiosk"){ const b=box(1.2,2.7,.75,devMat); b.position.y=1.35; scr=box(.9,1.1,.04); scr.position.set(0,1.85,.4); g.add(b,scr); }
+      g.position.copy(local(x,0,z)); g.rotation.y = facing;
+      addDevice(g, scr);
+    });
+  }
+  if(D.moving){
+    const road = new THREE.Mesh(new THREE.RingGeometry(D.moving.r-.9, D.moving.r+.9, 80), dm(tmat(THREE.MeshBasicMaterial,"road",{side:THREE.DoubleSide})));
+    road.rotation.x=-Math.PI/2; road.position.copy(D.c).setY(.03); scene.add(road);
+    for(let k=0;k<D.moving.n;k++){
+      const g = new THREE.Group(); let scr;
+      if(D.moving.kind==="car"){ const b=box(2,.55,1,devMat); b.position.y=.42; const cab=box(1.1,.45,.9,devMat); cab.position.set(-.1,.92,0); scr=box(.36,.14,.36); scr.position.set(-.1,1.22,0); g.add(b,cab,scr); }
+      else { const cab=box(1.1,1.15,1.1,devMat); cab.position.set(1.7,.72,0); const tr=box(2.9,1.45,1.15,devMat); tr.position.set(-.4,.88,0); scr=box(.42,.16,.42); scr.position.set(1.7,1.38,0); g.add(cab,tr,scr); }
+      addDevice(g, scr, {r:D.moving.r, a:k/D.moving.n*Math.PI*2 + i, w:D.moving.w*(1+.15*(k%2))});
+    }
+  }
+  if(D.shelves){
+    [[-3.5,4],[3.5,4],[0,-5.5]].forEach(([x,z])=>{
+      const sh = box(4.2,1.6,.8,devMat); sh.position.copy(local(x,.8,z)); sh.rotation.y=facing; scene.add(sh);
+      for(let k=0;k<2;k++){
+        const g=new THREE.Group(); const pole=box(.08,.4,.08,devMat); pole.position.y=1.8; const scr=box(.55,.32,.34); scr.position.y=2.15; g.add(pole,scr);
+        g.position.copy(local(x + (k-.5)*2.4, 0, z)); g.rotation.y=facing; addDevice(g, scr);
+      }
+    });
+  }
+
+  // knowledge graph
+  D.nodes=[]; D.edges=[];
+  const addNode=(type,label,pos)=>{
+    const [geo,size]=NODE_STYLE[type];
+    const mat=dm(new THREE.MeshStandardMaterial({color:P["t-"+type].clone(), emissive:P["t-"+type].clone(), emissiveIntensity:.12, roughness:.45, metalness:.1}));
+    const mesh=new THREE.Mesh(geo,mat); mesh.position.copy(pos); mesh.scale.setScalar(size); scene.add(mesh);
+    const n={D, type, label, pos, mesh, mat, size, base:P["t-"+type], glow:0, flash:null, nbrs:[], lastTrace:null};
+    mesh.userData.node=n;
+    n.lbl = makeLabel("lbl-node", label); n.lbl.position.copy(pos).add(V(0,size+.95,0)); n.lbl.visible=false;
+    D.nodes.push(n); allNodes.push(n); nodeMeshes.push(mesh); return n;
+  };
+  const addEdge=(a,b)=>{ D.edges.push({a,b,glow:0}); a.nbrs.push(b); b.nbrs.push(a); };
+  D.entNodes = [addNode("entity",D.entities[0],local(0,9.4,-1.6)), addNode("entity",D.entities[1],local(0,6.6,3.6))];
+  addEdge(D.entNodes[0], D.entNodes[1]);
+  D.sc.forEach((sc,k)=>{
+    const s = k===0 ? -1 : 1, x = s*3.6;
+    sc.D = D;
+    sc.eventNode = addNode("event", sc.event, local(x*.85,6.4,1.2));
+    sc.sigNodes = [addNode("signal", sc.signals[0][0], local(x+s*1.7,10.2,1.9)), addNode("signal", sc.signals[1][0], local(x-s*1.1,10.9,-1.3))];
+    sc.modelNode = addNode("model", sc.model, local(x,13.8,.4));
+    sc.ruleNode = addNode("rule", sc.rule, local(x*.9,16.8,1.1));
+    sc.decNodes = sc.dec.map((l,j)=>addNode("decision", l, local(x + (j-1)*1.9*(-s), 19.6 + (j===1?.7:0), (1-j)*1.4)));
+    sc.ent.forEach(e=>addEdge(D.entNodes[e], sc.eventNode));
+    sc.sigNodes.forEach(sn=>{ addEdge(sc.eventNode, sn); addEdge(sn, sc.modelNode); });
+    addEdge(sc.modelNode, sc.ruleNode);
+    sc.decNodes.forEach(dn=>addEdge(sc.ruleNode, dn));
+  });
+  addEdge(D.sc[0].sigNodes[1], D.sc[1].modelNode);
+  addEdge(D.entNodes[0], D.sc[1].modelNode);
+
+  const pos = new Float32Array(D.edges.length*6), col = new Float32Array(D.edges.length*6);
+  D.edges.forEach((e,j)=>{ pos.set([e.a.pos.x,e.a.pos.y,e.a.pos.z,e.b.pos.x,e.b.pos.y,e.b.pos.z], j*6); });
+  const eg = new THREE.BufferGeometry(); eg.setAttribute("position", new THREE.BufferAttribute(pos,3)); eg.setAttribute("color", new THREE.BufferAttribute(col,3));
+  D.edgeCol = col; D.edgeGeo = eg;
+  scene.add(new THREE.LineSegments(eg, dm(new THREE.LineBasicMaterial({vertexColors:true}), .85)));
+
+  const stem = new THREE.Line(new THREE.BufferGeometry().setFromPoints([local(0,.05,0), local(0,5.6,0)]), dm(tmat(THREE.LineDashedMaterial,"district-edge",{dashSize:.5,gapSize:.4})));
+  stem.computeLineDistances(); scene.add(stem);
+
+  // this business's own cloud model, above the privacy boundary
+  D.cloudPos = local(0,CLOUD_Y,-1);
+  D.cloudMat = dm(tmat(THREE.MeshStandardMaterial,"t-model",{roughness:.35}));
+  D.cloudMat.emissive = P["t-model"]; D.cloudMat.emissiveIntensity = .3;
+  D.cloudMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.6,1.1,32), D.cloudMat);
+  D.cloudMesh.position.copy(D.cloudPos); scene.add(D.cloudMesh);
+  D.cloudGlow = 0;
+  const cring = new THREE.Mesh(new THREE.TorusGeometry(2.3,.06,8,48), dm(tmat(THREE.MeshBasicMaterial,"t-model"),.6));
+  cring.rotation.x = Math.PI/2; cring.position.copy(D.cloudPos); scene.add(cring);
+  const tether = new THREE.Line(new THREE.BufferGeometry().setFromPoints([local(0,21.2,0), D.cloudPos.clone().add(V(0,-.6,0))]), dm(tmat(THREE.LineDashedMaterial,"t-model",{dashSize:.5,gapSize:.5}),.45));
+  tether.computeLineDistances(); scene.add(tether);
+  D.cloudLbl = makeLabel("lbl-cloud", `${D.cloud}<small>${D.cloudSub}</small>`);
+  D.cloudLbl.position.copy(D.cloudPos).add(V(0,2.6,0)); D.cloudLbl.visible=false;
+});
+function findEdge(a,b){ return a.D.edges.find(e=>(e.a===a&&e.b===b)||(e.a===b&&e.b===a)); }
+
+/* privacy boundary */
+const boundary = new THREE.Mesh(new THREE.CircleGeometry(47,120), tmat(THREE.MeshBasicMaterial,"accent",{transparent:true, opacity:.045, side:THREE.DoubleSide, depthWrite:false}));
+boundary.rotation.x=-Math.PI/2; boundary.position.y=BY; scene.add(boundary);
+const bEdgePts=[]; for(let k=0;k<=160;k++){ const a=k/160*Math.PI*2; bEdgePts.push(V(Math.cos(a)*47,BY,Math.sin(a)*47)); }
+const bEdge = new THREE.Line(new THREE.BufferGeometry().setFromPoints(bEdgePts), tmat(THREE.LineDashedMaterial,"accent",{dashSize:1.4,gapSize:1.1, transparent:true, opacity:.7}));
+bEdge.computeLineDistances(); scene.add(bEdge);
+makeLabel("lbl-boundary","Privacy boundary · raw data stays below").position.set(0,BY+.2,47);
+
+/* shared ontology: types only */
+const ont = { glow:0, group:new THREE.Group(), shapes:[] };
+ont.group.position.copy(ONT); scene.add(ont.group);
+ont.wire = new THREE.Mesh(new THREE.IcosahedronGeometry(3.2,1), tmat(THREE.MeshBasicMaterial,"accent",{wireframe:true, transparent:true, opacity:.4}));
+ont.group.add(ont.wire);
+["entity","event","signal","model","rule","decision"].forEach((t,k)=>{
+  const [geo,size]=NODE_STYLE[t];
+  const m=new THREE.Mesh(geo, tmat(THREE.MeshStandardMaterial,"t-"+t,{roughness:.5})); m.scale.setScalar(size*.55);
+  m.userData.a = k/6*Math.PI*2; ont.group.add(m); ont.shapes.push(m);
+});
+const schemaMat = tmat(THREE.LineDashedMaterial,"accent",{dashSize:.7,gapSize:.9,transparent:true,opacity:.35});
+INDUSTRIES.forEach(D=>{ const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints([ONT.clone(), D.cloudPos.clone().add(V(0,.6,0))]), schemaMat); l.computeLineDistances(); scene.add(l); });
+ont.label = makeLabel("lbl-hub", "Shared ontology<small>6 node types · no data, no model</small>");
+ont.label.position.copy(ONT).add(V(0,5,0));
+
+/* ---------------- theme ---------------- */
+function refreshTheme(){ readPalette(); themed.forEach(({m,key})=>m.color.copy(P[key])); scene.fog.color.copy(P["scene-bg"]); makeGrid(); applyFocus(); }
+const mq = matchMedia("(prefers-color-scheme: dark)");
+(mq.addEventListener ? mq.addEventListener("change",refreshTheme) : mq.addListener(refreshTheme));
+new MutationObserver(refreshTheme).observe(document.documentElement,{attributes:true, attributeFilter:["data-theme"]});
+
+/* ---------------- particles & effects ---------------- */
+function makeParticle(color, s=1){
+  const g=new THREE.Group();
+  const core=new THREE.Mesh(G.particle,new THREE.MeshBasicMaterial({color:color.clone()}));
+  const halo=new THREE.Mesh(G.halo,new THREE.MeshBasicMaterial({color:color.clone(), transparent:true, opacity:.2, depthWrite:false}));
+  g.add(core,halo); g.userData={core,halo}; g.scale.setScalar(s); scene.add(g); return g;
+}
+function setPColor(g,c){ g.userData.core.material.color.copy(c); g.userData.halo.material.color.copy(c); }
+function killParticle(g){ if(!g) return; scene.remove(g); g.userData.core.material.dispose(); g.userData.halo.material.dispose(); }
+function arcLerp(a,b,p,h,out){ out.lerpVectors(a,b,p); out.y += Math.sin(Math.PI*p)*h; return out; }
+function ripple(pos,color,r1=2.6,dur=.7,op=.8){
+  const m=new THREE.Mesh(G.ring,new THREE.MeshBasicMaterial({color:color.clone(), transparent:true, opacity:op, side:THREE.DoubleSide, depthWrite:false}));
+  m.rotation.x=-Math.PI/2; m.position.copy(pos); scene.add(m); effects.push({m,t:0,dur,r1,op});
+}
+function crossCheck(p,color){
+  const y=p.position.y, py=p.userData.py;
+  if(py!==undefined && (py-BY)*(y-BY)<0) ripple(tmpV2.set(p.position.x,BY,p.position.z), color);
+  p.userData.py=y;
+}
+function devPos(dev,out){ return dev.screen.getWorldPosition(out); }
+function lightNode(n,color){ n.glow=1; if(color) n.flash=color; }
+function lightEdge(a,b){ const e=findEdge(a,b); if(e) e.glow=1; }
+
+/* ---------------- decisions ---------------- */
+const stats={n:0, esc:0, ms:[]};
+let syncRound=0;
+function makeDecision(D,o={}){
+  const k = o.k!==undefined ? o.k : (Math.random()<.5?0:1), sc=D.sc[k];
+  let s = .02 + Math.random()*.96;
+  if(o.noEscalate) while(Math.abs(s-.45)<.06 || Math.abs(s-.72)<.06) s = .02 + Math.random()*.96;
+  if(o.forceEscalate) s = .45 + (Math.random()<.5?-1:1)*(.008+Math.random()*.02);
+  if(o.band!==undefined) s = [.2,.58,.86][o.band] + (Math.random()-.5)*.08;
+  const escalate = !!sc.mustEscalate || !!o.forceEscalate || (!o.noEscalate && (Math.abs(s-.45)<.035 || Math.abs(s-.72)<.035));
+  let fin = s;
+  if(sc.mustEscalate) fin = o.band!==undefined ? s : clamp(.05+Math.random()*.9,.02,.98);
+  else if(escalate) fin = clamp(s+(Math.random()-.5)*.16,.02,.98);
+  const band = fin<.45 ? 0 : fin<.72 ? 1 : 2;
+  return {D, sc, k, score:s, final:fin, escalate, must:!!sc.mustEscalate, band, outcome:BANDS[band], node:sc.decNodes[band],
+          ms:4+Math.floor(Math.random()*10), escMs:92+Math.floor(Math.random()*48), dev:o.dev || pick(D.devices), onRecord:o.onRecord};
+}
+function record(d, when){
+  d.time = when || new Date();
+  stats.n++; if(d.escalate) stats.esc++; stats.ms.push(d.ms); if(stats.ms.length>400) stats.ms.shift();
+  d.node.lastTrace = d; lastTrace = d;
+  addLog(`<span class="ind">${d.D.name} ·</span> ${d.sc.event} → <b class="o-${d.outcome}">${d.sc.dec[d.band]}</b> <span class="ind">· ${fmt(d.final)} · ${d.ms} ms${d.escalate?" · "+d.D.cloud:""}</span>`, d.time);
+  renderKpis();
+  if(d.onRecord) d.onRecord(d);
+  else if(!pinned) renderTrace(d, false); else if(pinned===d.node) renderTrace(d, true);
+}
+
+class Run{
+  constructor(d){
+    Object.assign(this,{d, si:-1, t:0, done:false, p2:null, label:null, line:null});
+    const st=[["sense",1,.5],["infer",2,.8],["lookup",3,1.25]];
+    if(d.escalate) st.push(["escalate",4,2.4]);
+    st.push(["act",5,1.6],["linger",0,.6]);
+    this.stages = st.map(([key,n,dur])=>({key,n,dur,f:{}}));
+    this.p = makeParticle(P["t-signal"]); this.p.scale.setScalar(.001);
+    this.next();
+  }
+  get stage(){ return this.stages[this.si]; }
+  next(){ this.si++; this.t=0; if(this.si>=this.stages.length) this.dispose(); }
+  update(dt){
+    if(this.done) return;
+    this.t += dt; const s=this.stage, q=Math.min(1,this.t/s.dur);
+    this[s.key](q,s.f);
+    if(this.label){ this.label.position.copy(this.p.position); this.label.position.y += 1.35; this.label.visible = isFocused(this.d.D); }
+    if(q>=1) this.next();
+  }
+  sense(q,f){
+    const dev=this.d.dev;
+    if(!f.in){ f.in=1; dev.glow=1; dev.flash=P["t-signal"]; }
+    devPos(dev,this.p.position); this.p.position.y += .5+.7*ease(q); this.p.scale.setScalar(Math.max(.001,ease(q)));
+  }
+  infer(q,f){
+    const d=this.d, dev=d.dev;
+    if(!f.in){ f.in=1; dev.flash=P["t-model"]; dev.glow=1; setPColor(this.p,P["t-model"]); this.p.scale.setScalar(1);
+      this.label = makeLabel("lbl-run", d.must ? `pre-check done · ${d.ms} ms on device` : `score ${fmt(d.score)} · ${d.ms} ms on device`); }
+    dev.glow=Math.max(dev.glow,.6);
+    devPos(dev,this.p.position); this.p.position.y += 1.2 + Math.sin(q*Math.PI*3)*.15;
+  }
+  lookup(q,f){
+    const d=this.d, sc=d.sc, ev=sc.eventNode, s1=sc.sigNodes[0], s2=sc.sigNodes[1], m=sc.modelNode;
+    if(!f.in){ f.in=1; setPColor(this.p,P["t-signal"]); this.from = devPos(d.dev,V()).add(V(0,1.2,0)); this.label.element.textContent = `graph: ${sc.event}`; }
+    const h=Math.min(2,Math.floor(q*3)), e=ease(q*3-h);
+    if(h>=1 && !f.h1){ f.h1=1; lightNode(ev); sc.ent.forEach(i=>{ lightNode(d.D.entNodes[i]); lightEdge(d.D.entNodes[i],ev); }); this.p2=makeParticle(P["t-signal"]); }
+    if(h>=2 && !f.h2){ f.h2=1; lightNode(s1); lightNode(s2); lightEdge(ev,s1); lightEdge(ev,s2); }
+    if(h===0) arcLerp(this.from, ev.pos, e, 1.5, this.p.position);
+    if(h===1){ arcLerp(ev.pos,s1.pos,e,.8,this.p.position); arcLerp(ev.pos,s2.pos,e,.8,this.p2.position); }
+    if(h===2){ arcLerp(s1.pos,m.pos,e,.6,this.p.position); arcLerp(s2.pos,m.pos,e,.6,this.p2.position); }
+    if(q>=1 && !f.end){ f.end=1; lightNode(m); lightEdge(s1,m); lightEdge(s2,m); killParticle(this.p2); this.p2=null; setPColor(this.p,P["t-model"]); }
+  }
+  escalate(q,f){
+    const d=this.d, D=d.D, m=d.sc.modelNode, C=D.cloudPos;
+    if(!f.in){ f.in=1; setPColor(this.p,P["t-model"]); this.label.element.className="lbl-run esc";
+      this.label.element.textContent = d.must ? `regulated: sending to ${D.cloud}` : `near threshold · asking ${D.cloud}`;
+      const g=new THREE.BufferGeometry().setFromPoints([m.pos.clone(),C.clone()]);
+      this.line=new THREE.Line(g,new THREE.LineDashedMaterial({color:P["t-model"].clone(),dashSize:.6,gapSize:.45,transparent:true,opacity:.8}));
+      this.line.computeLineDistances(); scene.add(this.line); this.p.userData.py=undefined; }
+    if(q>=.42 && !f.hub){ f.hub=1; D.cloudGlow=1; this.label.element.textContent=`${D.cloud}: ${fmt(d.final)} · ${d.escMs} ms`; }
+    if(q<.42) arcLerp(m.pos,C,ease(q/.42),2,this.p.position);
+    else if(q<.58) this.p.position.copy(C);
+    else arcLerp(C,m.pos,ease((q-.58)/.42),2,this.p.position);
+    crossCheck(this.p,P["t-model"]);
+    if(q>=1 && !f.end){ f.end=1; lightNode(m); this.removeLine(); }
+  }
+  act(q,f){
+    const d=this.d, sc=d.sc, m=sc.modelNode, r=sc.ruleNode, dn=d.node, oc=P["o-"+d.outcome];
+    if(!f.in){ f.in=1; setPColor(this.p,P["t-model"]); this.label.element.className="lbl-run"; this.label.element.textContent=`rule: ${sc.rule}`; }
+    if(q>=.25 && !f.r){ f.r=1; lightNode(r); lightEdge(m,r); }
+    if(q>=.5 && !f.dn){ f.dn=1; lightNode(dn,oc); lightEdge(r,dn); setPColor(this.p,oc);
+      this.label.element.className="lbl-run o-"+d.outcome; this.label.element.textContent=sc.dec[d.band]; record(d); }
+    if(q<.25) arcLerp(m.pos,r.pos,ease(q/.25),.5,this.p.position);
+    else if(q<.5) arcLerp(r.pos,dn.pos,ease((q-.25)/.25),.5,this.p.position);
+    else { devPos(d.dev,tmpV).y += 1.2; arcLerp(dn.pos,tmpV,ease((q-.5)/.5),2.5,this.p.position); }
+    if(q>=1 && !f.end){ f.end=1; d.dev.glow=1; d.dev.flash=oc; ripple(devPos(d.dev,tmpV2).setY(.1), oc, 2.2, .8); }
+  }
+  linger(q){ devPos(this.d.dev,this.p.position); this.p.position.y += 1.2; this.p.scale.setScalar(Math.max(.001,1-q)); }
+  removeLine(){ if(this.line){ scene.remove(this.line); this.line.geometry.dispose(); this.line.material.dispose(); this.line=null; } }
+  dispose(){ this.done=true; killParticle(this.p); killParticle(this.p2); this.p2=null; if(this.label){ scene.remove(this.label); this.label=null; } this.removeLine(); }
+  stageN(){ return this.done ? 0 : this.stage.n; }
+}
+
+/* federated learning, inside each business */
+class Sync{
+  constructor(){ this.st=0; this.t=0; this.done=false; this.ps=[]; this.dur=[1.8,.7,1.9]; this.enter(0); }
+  enter(i){
+    if(i===0) allDevices.forEach(dev=>{ const p=makeParticle(P["t-model"],.45); p.userData.dev=dev; this.ps.push(p); dev.glow=1; dev.flash=P["t-model"]; });
+    if(i===1){ this.ps.forEach(killParticle); this.ps=[]; syncRound++; $("#kVer").textContent=`learning round ${syncRound}`;
+      INDUSTRIES.forEach(D=>{ D.cloudGlow=1; ripple(D.cloudPos.clone(), P["t-model"], 5, .9, .7); }); }
+    if(i===2) allDevices.forEach(dev=>{ const p=makeParticle(P["t-model"],.45); p.userData.dev=dev; this.ps.push(p); });
+  }
+  update(dt){
+    if(this.done) return;
+    this.t+=dt; const q=Math.min(1,this.t/this.dur[this.st]), e=ease(q);
+    if(this.st===0) this.ps.forEach(p=>{ const dev=p.userData.dev; devPos(dev,tmpV); arcLerp(tmpV,dev.D.cloudPos,e,2,p.position); crossCheck(p,P["t-model"]); });
+    if(this.st===2) this.ps.forEach(p=>{ const dev=p.userData.dev; devPos(dev,tmpV); arcLerp(dev.D.cloudPos,tmpV,e,2,p.position); crossCheck(p,P["t-model"]); });
+    if(q>=1){
+      if(this.st===2){
+        allDevices.forEach(dev=>{ dev.glow=1; dev.flash=P["t-model"]; });
+        this.dispose();
+        addLog(`<span class="sync">Learning round ${syncRound}: each business merged its own updates and sent a new model to its devices.</span> <span class="ind">Nothing pooled across businesses. Raw data moved: 0 B.</span>`);
+        return;
+      }
+      this.st++; this.t=0; this.enter(this.st);
+    }
+  }
+  dispose(){ this.ps.forEach(killParticle); this.ps=[]; this.done=true; }
+}
+
+/* ---------------- side panel ---------------- */
+let lastTrace=null, pinned=null;
+function renderKpis(){
+  $("#kDec").textContent = stats.n.toLocaleString();
+  const s=[...stats.ms].sort((a,b)=>a-b); const med = s.length ? s[Math.floor(s.length/2)] : 0;
+  $("#kLat").innerHTML = s.length ? `${med}<small>ms</small>` : "–";
+  const edgePct = stats.n ? Math.round((1-stats.esc/stats.n)*100) : 0;
+  $("#kEdge").innerHTML = stats.n ? `${edgePct}<small>%</small>` : "–";
+  $("#kEsc").textContent = stats.n ? `sent to cloud ${100-edgePct}%` : "sent to cloud –";
+}
+const logEl=$("#log");
+function addLog(html, when){
+  const li=document.createElement("li"); li.innerHTML=`<time>${fmtTime(when||new Date())}</time><span>${html}</span>`;
+  logEl.prepend(li); while(logEl.children.length>30) logEl.lastChild.remove();
+}
+const traceEl=$("#trace");
+function renderTrace(d, isPinned){
+  const sc=d.sc;
+  const sigs = sc.signals.map(([l,v])=>`${l}: <span class="dim">${v[d.band]}</span>`).join("<br>");
+  const esc = d.must
+    ? `Always. Lending decisions use <b>${d.D.cloud}</b>, a validated model that sees only Credit data. Score <span class="mono">${fmt(d.final)}</span> <span class="mono dim">(${d.escMs} ms)</span>`
+    : d.escalate
+      ? `Yes. Near a threshold, so <b>${d.D.cloud}</b> revised it to <span class="mono">${fmt(d.final)}</span> <span class="mono dim">(${d.escMs} ms)</span>`
+      : `No. Confident, so nothing left the device.`;
+  traceEl.innerHTML = `
+    <div class="h2row"><h2>${isPinned?"Selected decision":"Latest decision"}</h2>${isPinned?'<button class="linkbtn" type="button" data-act="live">Back to live</button>':""}</div>
+    <div class="t-head"><strong>${d.D.name}</strong><span>${d.D.device}</span><time>${fmtTime(d.time)}</time></div>
+    <ol class="t-steps">
+      <li><span class="k">Event</span><span class="v">${sc.event} · ${sc.ent.map(i=>d.D.entities[i]).join(", ")}</span></li>
+      <li><span class="k">Signals</span><span class="v">${sigs}</span></li>
+      <li><span class="k">Edge model</span><span class="v">${sc.model} <span class="mono">· ${d.must?"":`score ${fmt(d.score)} · `}${d.ms} ms on device</span></span></li>
+      <li><span class="k">Cloud</span><span class="v">${esc}</span></li>
+      <li><span class="k">Rule</span><span class="v">${sc.rule} <span class="dim">· checked</span></span></li>
+    </ol>
+    <span class="pill o-${d.outcome}">${sc.dec[d.band]}</span>
+    <p class="reason">${sc.why[d.band]}</p>`;
+}
+function renderNode(n){
+  if(n.type==="decision" && n.lastTrace){ renderTrace(n.lastTrace, true); return; }
+  const t=TYPES[n.type];
+  traceEl.innerHTML = `
+    <div class="h2row"><h2>Selected node</h2><button class="linkbtn" type="button" data-act="live">Back to live</button></div>
+    <div class="t-head"><strong>${n.label}</strong><span>${t.label} · ${n.D.name}</span></div>
+    <p class="node-desc">${n.type==="decision" ? "No decision has reached this node yet. It lights up when the score lands in its band." : t.desc}</p>
+    <div><h2 style="margin-bottom:6px">Connected to</h2><div class="nbrs">${n.nbrs.map(x=>`<span>${x.label}</span>`).join("")}</div></div>`;
+}
+function unpin(){ pinned=null; traceEl.classList.remove("spot"); if(lastTrace) renderTrace(lastTrace,false); }
+traceEl.addEventListener("click",e=>{ if(e.target.closest('[data-act="live"]')) unpin(); });
+
+/* ---------------- focus, dimming & camera ---------------- */
+let focus="all", dimSet=null, fly=null;
+const narrow = ()=> host.clientWidth < host.clientHeight*.95;
+function overviewView(){ return narrow() ? {p:V(0,100,138), t:V(0,14,0)} : {p:V(0,60,88), t:V(0,14,0)}; }
+function districtView(D){ const n=narrow(); return {p:D.c.clone().addScaledVector(D.out,n?38:27).addScaledVector(D.tan,5).setY(n?30:25), t:D.c.clone().setY(14)}; }
+function ontologyView(){ return narrow() ? {p:V(0,58,70), t:V(0,30,0)} : {p:V(0,46,50), t:V(0,30,0)}; }
+function deviceView(D){ const n=narrow(); return {p:D.c.clone().addScaledVector(D.out,n?26:19).addScaledVector(D.tan,-4).setY(n?12:8), t:D.c.clone().setY(4)}; }
+function decisionView(sc){ const D=sc.D, c=sc.decNodes[1].pos.clone(); c.y-=1; const n=narrow(); return {p:c.clone().addScaledVector(D.out,n?20:13).addScaledVector(D.tan,2).setY(c.y+(n?5:3)), t:c}; }
+function flyTo(v,dur=1.4){ if(reduceMotion){ camera.position.copy(v.p); controls.target.copy(v.t); controls.update(); return; } fly={p0:camera.position.clone(), t0:controls.target.clone(), p1:v.p, t1:v.t, t:0, dur}; }
+function isFocused(D){ return dimSet ? dimSet.has(D.id) && dimSet.size===1 : focus===D.id; }
+function applyFocus(){
+  INDUSTRIES.forEach(D=>{
+    const dim = dimSet ? !dimSet.has(D.id) : false;
+    D.mats.forEach(({m,op})=>{ m.opacity = dim ? op*.14 : op; });
+    D.label.element.style.opacity = dim ? .3 : 1;
+    const on = isFocused(D);
+    D.ringMat.color.copy(on ? P.accent : P["district-edge"]);
+    D.nodes.forEach(n=>n.lbl.visible=on);
+    D.cloudLbl.visible = on || (tour && TOUR[tour.i].cloudLabels);
+  });
+}
+function setFocus(id, moveCam=true){
+  focus=id;
+  chipsEl.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed", b.dataset.id===id?"true":"false"));
+  applyFocus();
+  if(moveCam) flyTo(id==="all" ? overviewView() : districtView(byId[id]));
+}
+chipsEl.addEventListener("click",e=>{ const b=e.target.closest(".chip"); if(!b) return; if(tour) endTour(); setFocus(b.dataset.id); });
+
+/* ---------------- sim controls ---------------- */
+let playing=true, speed=reduceMotion?.5:1;
+const speedEl=$("#speed"), speedOut=$("#speedOut");
+const showSpeed=()=>{ speedOut.textContent=speed.toFixed(2).replace(/0$/,"")+"×"; };
+speedEl.value=speed; showSpeed();
+speedEl.addEventListener("input",()=>{ speed=parseFloat(speedEl.value); showSpeed(); });
+const btnPlay=$("#btnPlay");
+function setPlaying(v){ playing=v; btnPlay.textContent=playing?"Pause":"Play"; $("#scProg").classList.toggle("paused", !playing); }
+btnPlay.addEventListener("click",()=>setPlaying(!playing));
+
+/* ---------------- walkthrough (System Atlas pattern) ---------------- */
+let runs=[], syncs=[], later=[];
+const after=(sec,fn)=>later.push({t:sec,fn});
+function clearAll(){ runs.forEach(r=>r.dispose()); runs=[]; syncs.forEach(s=>s.dispose()); syncs=[]; later=[]; }
+const RUN_LEN = d => .5+.8+1.25+(d.escalate?2.4:0)+1.6+.6;
+function play(D,o){ const d=makeDecision(D,o); runs.push(new Run(d)); return RUN_LEN(d); }
+
+const C=byId.credit, B=byId.betting, I=byId.insurance;
+const TOUR = [
+ { title:"One pattern, five businesses", focus:null, view:overviewView,
+   story:"Each disc on the ground is a business: credit, sports betting, insurance, retail and logistics. Above each one floats its own knowledge graph. All five graphs are built from the same six node types, so one design serves every business.",
+   tech:"Three tiers. Ground: edge devices running small models. Middle: each business's own knowledge graph (entity, event, signal, edge model, rule, decision). Above the privacy boundary: each business's own cloud model, plus a shared ontology that holds only the schema.",
+   play(){ INDUSTRIES.forEach((D,k)=>after(k*.5,()=>play(D,{noEscalate:true}))); return 2+5; } },
+ { title:"A shared vocabulary, not a shared model", focus:null, view:ontologyView, cloudLabels:true,
+   story:"At the top sits the shared ontology: the six node types and how they connect. It holds no customer data and no model. Each business builds its graph from it and keeps its own model in its own cloud, which is why the five graphs look alike but never mix.",
+   tech:"The ontology is a versioned schema (types, relations, required properties such as reason codes and timestamps). Each business graph validates against it. Business cloud models are separate deployments with separate data; the dashed lines carry schema versions only.",
+   play(){ ont.glow=1; ripple(ONT.clone(),P.accent,6,1.2,.6); INDUSTRIES.forEach(D=>{ const p=makeParticle(P.accent,.4); const t0={t:0}; effects.push({custom:true, t:0, dur:1.6, upd(q){ arcLerp(ONT,D.cloudPos,ease(q),1,p.position); }, end(){ killParticle(p); D.cloudGlow=1; }}); }); return 3.2; } },
+ { title:"A card swipe, decided on the device", focus:["credit"], view:()=>districtView(C),
+   story:"A card terminal picks up a swipe. The fraud model on the device scores it in a few milliseconds, the graph links it to the customer and the merchant, and the card network's fraud rules are checked. Approve, ask for a code, or decline, without leaving the device.",
+   tech:"Fraud screening has a tight latency budget at the terminal. A compact model plus a cached local subgraph (recent devices, merchants, velocity counters) keeps p50 under 10 ms. The decision and its inputs are written to the graph as a Decision node.",
+   play(){ return play(C,{k:0,noEscalate:true,dev:C.devices[2]}); } },
+ { title:"A credit line goes to the approved model", focus:["credit"], view:()=>districtView(C),
+   story:"Lending is regulated, so the phone only does pre-checks: confirming identity and filling in the application. The request then goes up to Credit's own validated underwriting model. The graph stores the reason codes the lender needs if it has to send a decline notice.",
+   tech:"Underwriting stays centralised under model-risk governance (independent validation, monitoring, challenger models) and uses only Credit's data, nothing from betting or retail. Adverse-action reason codes are stored on the Decision node for ECOA / Reg B notices.",
+   play(){ return play(C,{k:1,dev:C.devices[1]}); } },
+ { title:"Same pattern, different words", focus:["betting"], view:()=>districtView(B),
+   story:"Sports betting uses the same six node types with its own labels: a bettor instead of an applicant, a bet slip instead of a card swipe. The safer-gambling score runs on the phone, and geofence and self-exclusion rules are checked before a bet is accepted.",
+   tech:"In-play markets need repricing within a second or two of a live event, so pricing and safer-gambling scoring sit on the device or venue kiosk. Location and self-exclusion lists are Rule nodes, so every accepted bet shows which rules it passed.",
+   play(){ play(B,{k:0,noEscalate:true,band:2,dev:B.devices[1]}); after(1.4,()=>play(B,{k:1,noEscalate:true,dev:B.devices[2]})); return 1.4+4.75; } },
+ { title:"When the device isn't sure", focus:["insurance"], view:()=>districtView(I),
+   story:"A car's telematics box detects a collision. The score lands right on a threshold, so the device asks Insurance's own claims model for a second opinion. Only the score and signals cross the privacy boundary. The raw sensor data stays in the car.",
+   tech:"Escalation fires when the edge score is within a margin of a decision threshold (here ±0.035). The request carries derived features and the score, not raw telemetry. The cloud answer comes back in about 100 ms and is stored next to the edge score.",
+   play(){ return play(I,{k:1,forceEscalate:true}); } },
+ { title:"Learning stays inside each business", focus:null, view:()=>narrow()?{p:V(0,104,118),t:V(0,16,0)}:{p:V(0,74,82),t:V(0,16,0)}, cloudLabels:true,
+   story:"Each device learns from its own outcomes. Every so often, model updates rise to that business's cloud, get merged, and a new version goes back to its devices. Credit models never learn from betting data, and raw data never moves.",
+   tech:"Federated averaging per business: devices send weight updates (optionally with secure aggregation and differential-privacy noise), the business cloud merges them and pushes a new version. There is no cross-business pooling; only the ontology is shared.",
+   play(){ syncs.push(new Sync()); return 4.4; } },
+ { title:"Every decision leaves a trail", focus:["credit"], view:()=>decisionView(C.sc[1]), trail:true,
+   story:"Click any decision cube to see why it happened: the event, the signals and their values, the model score, whether it went to the cloud, and the rule that was checked. That trail is what lets you explain an AI decision to a customer, a regulator or an auditor.",
+   tech:"Each Decision node links to the exact Event, Signal values, model version, score, escalation result and Rule. Walking the graph backwards from a decision gives full lineage without a separate audit log.",
+   play(){ return play(C,{k:1,band:1,dev:C.devices[3], onRecord(d){ pinned=d.node; renderTrace(d,true); traceEl.classList.add("spot"); }}); } }
+];
+
+let tour=null;
+const tourCard=$("#tourCard"), scDots=$("#scDots"), scAuto=$("#scAuto"), scNext=$("#scNext"), scPrev=$("#scPrev"), scProg=$("#scProg");
+scDots.innerHTML = TOUR.map((s,i)=>`<button class="dot" type="button" role="tab" data-i="${i}" aria-label="Step ${i+1}: ${s.title}" title="${s.title}"></button>`).join("");
+const readSec = t => Math.max(4, t.split(/\s+/).length/200*60);
+function setHash(h){ try{ history.replaceState(null,"",h || location.pathname+location.search); }catch(e){} }
+
+function startTour(i=0, auto=true){
+  clearAll(); unpin();
+  tour = {i:-1, auto, loopT:0, advT:0, loopLen:0};
+  $("#walkLabel").textContent="Restart"; $("#frozen").hidden=false; tourCard.hidden=false;
+  setPlaying(true);
+  goStep(i);
+}
+function goStep(i){
+  if(!tour) return;
+  i = clamp(i,0,TOUR.length-1);
+  clearAll(); traceEl.classList.remove("spot"); if(pinned) unpin();
+  const st = TOUR[i]; tour.i=i;
+  dimSet = st.focus ? new Set(st.focus) : null;
+  applyFocus();
+  flyTo(st.view());
+  tour.loopLen = st.play();
+  tour.loopT = tour.loopLen + 1.4;
+  tour.advT = Math.max(readSec(st.story), tour.loopLen/speed + 1);
+  renderTourCard();
+  setHash(`#walkthrough-${i+1}`);
+}
+function renderTourCard(){
+  const st=TOUR[tour.i], last=tour.i===TOUR.length-1;
+  $("#scCount").textContent = `${tour.auto?"Playing · step":"Step"} ${tour.i+1} of ${TOUR.length}`;
+  $("#scTitle").textContent = st.title;
+  $("#scText").textContent = st.story;
+  $("#scTech").textContent = st.tech;
+  scDots.querySelectorAll(".dot").forEach((d,k)=>{ d.classList.toggle("on",k===tour.i); d.classList.toggle("past",k<tour.i); d.setAttribute("aria-selected",k===tour.i?"true":"false"); });
+  scPrev.disabled = tour.i===0;
+  scAuto.classList.toggle("on", tour.auto);
+  scAuto.innerHTML = tour.auto
+    ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg> Pause`
+    : `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg> Auto`;
+  scNext.innerHTML = last ? "Finish" : `Next <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>`;
+  scProg.innerHTML = tour.auto ? `<span style="animation-duration:${Math.round(tour.advT*1000)}ms"></span>` : "";
+  scProg.classList.toggle("paused", !playing);
+}
+function tourNext(manual){ if(!tour) return; if(manual) tour.auto=false; if(tour.i>=TOUR.length-1){ if(manual) endTour(); else { tour.auto=false; renderTourCard(); } return; } goStep(tour.i+1); }
+function tourPrev(){ if(!tour) return; tour.auto=false; goStep(tour.i-1); }
+function toggleAuto(){ if(!tour) return; tour.auto=!tour.auto; if(tour.auto) tour.advT=Math.max(readSec(TOUR[tour.i].story)*.6, 3); renderTourCard(); }
+function endTour(){
+  if(!tour) return;
+  tour=null; clearAll(); dimSet=null; tourCard.hidden=true; $("#frozen").hidden=true; $("#walkLabel").textContent="Walk me through";
+  traceEl.classList.remove("spot"); unpin(); applyFocus(); setHash("");
+  spawnT=.3; syncT=16;
+  flyTo(focus==="all"?overviewView():districtView(byId[focus]));
+}
+$("#btnWalk").addEventListener("click",()=>startTour(0,true));
+$("#tourX").addEventListener("click",endTour);
+scNext.addEventListener("click",()=>tourNext(true));
+scPrev.addEventListener("click",tourPrev);
+scAuto.addEventListener("click",toggleAuto);
+scDots.addEventListener("click",e=>{ const d=e.target.closest(".dot"); if(d && tour){ tour.auto=false; goStep(+d.dataset.i); } });
+
+addEventListener("keydown",e=>{
+  const tag=(e.target&&e.target.tagName)||"";
+  if(tag==="INPUT"||tag==="TEXTAREA"||tag==="SELECT"||e.metaKey||e.ctrlKey||e.altKey) return;
+  const k=e.key;
+  if(k===" "){ if(tag==="BUTTON"||tag==="SUMMARY") return; e.preventDefault(); if(tour) toggleAuto(); else setPlaying(!playing); }
+  else if(k==="ArrowRight" && tour) tourNext(true);
+  else if(k==="ArrowLeft" && tour) tourPrev();
+  else if(k==="w"||k==="W") startTour(0,true);
+  else if(k==="Escape"){ if(tour) endTour(); else if(pinned) unpin(); }
+});
+function fromHash(){ const m=/^#walkthrough(?:-(\d+))?$/.exec(location.hash); return m ? (m[1]?+m[1]-1:0) : null; }
+addEventListener("hashchange",()=>{ const i=fromHash(); if(i===null) return; if(tour){ if(i!==tour.i) goStep(i); } else startTour(i,false); });
+
+/* ---------------- picking ---------------- */
+const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(), tip=$("#tooltip");
+let downAt=null;
+function hitNode(ev){
+  const r=renderer.domElement.getBoundingClientRect();
+  ptr.set(((ev.clientX-r.left)/r.width)*2-1, -((ev.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(ptr,camera);
+  const h=ray.intersectObjects(nodeMeshes,false).find(h=>!dimSet || dimSet.has(h.object.userData.node.D.id));
+  return h ? h.object.userData.node : null;
+}
+renderer.domElement.addEventListener("pointermove",ev=>{
+  if(ev.pointerType!=="mouse"){ tip.hidden=true; return; }
+  const n=hitNode(ev);
+  if(n){ const r=stageEl.getBoundingClientRect(); tip.hidden=false; tip.innerHTML=`<b>${n.label}</b><span>${TYPES[n.type].label} · ${n.D.name}</span>`;
+    const x=Math.min(ev.clientX-r.left+14, r.width-tip.offsetWidth-8); tip.style.left=x+"px"; tip.style.top=(ev.clientY-r.top+14)+"px"; renderer.domElement.style.cursor="pointer"; }
+  else { tip.hidden=true; renderer.domElement.style.cursor=""; }
+});
+renderer.domElement.addEventListener("pointerleave",()=>{ tip.hidden=true; });
+renderer.domElement.addEventListener("pointerdown",ev=>{ downAt=[ev.clientX,ev.clientY]; });
+renderer.domElement.addEventListener("pointerup",ev=>{
+  if(!downAt) return; const moved=Math.hypot(ev.clientX-downAt[0],ev.clientY-downAt[1]); downAt=null; if(moved>6) return;
+  const n=hitNode(ev);
+  if(n){ pinned=n; lightNode(n); renderNode(n); } else if(pinned) unpin();
+});
+
+/* ---------------- resize & first frame ---------------- */
+function resize(){ const w=host.clientWidth, h=host.clientHeight; if(!w||!h) return; renderer.setSize(w,h,false); renderer.domElement.style.width=w+"px"; renderer.domElement.style.height=h+"px"; labelRenderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+new ResizeObserver(resize).observe(host); resize();
+{ const v=overviewView(); camera.position.copy(v.p); controls.target.copy(v.t); controls.update(); }
+for(let k=0;k<6;k++){ const D=INDUSTRIES[k%5]; record(makeDecision(D,{k:k===5?1:0}), new Date(Date.now()-(7-k)*1300)); }
+
+/* ---------------- loop ---------------- */
+let spawnT=.2, syncT=14, last=performance.now();
+function spawnRun(){ const D = (focus!=="all" && Math.random()<.65) ? byId[focus] : pick(INDUSTRIES); runs.push(new Run(makeDecision(D))); }
+const railLis=[...document.querySelectorAll("#rail li")], railCounts=[0,0,0,0,0,0];
+function updateRail(){
+  railCounts.fill(0);
+  runs.forEach(r=>{ const n=r.stageN(); if(n) railCounts[n-1]++; });
+  railCounts[5]=syncs.filter(s=>!s.done).length;
+  railLis.forEach((li,i)=>{ const c=li.querySelector(".c"); const v=String(railCounts[i]); if(c.textContent!==v) c.textContent=v; li.classList.toggle("active",railCounts[i]>0); });
+}
+if(fromHash()!==null) startTour(fromHash(), false);
+
+function tick(now){
+  requestAnimationFrame(tick);
+  const rdt=Math.min(.05,(now-last)/1000); last=now;
+  const dt = playing ? rdt*speed : 0;
+
+  if(tour){
+    if(playing){
+      tour.loopT-=dt; if(tour.loopT<=0){ tour.loopLen=TOUR[tour.i].play(); tour.loopT=tour.loopLen+1.4; }
+      if(tour.auto){ tour.advT-=rdt; if(tour.advT<=0) tourNext(false); }
+    }
+  } else if(playing){
+    spawnT-=dt; if(spawnT<=0){ spawnT=.45+Math.random()*.6; if(runs.length<12) spawnRun(); }
+    syncT-=dt; if(syncT<=0){ syncT=20; if(!syncs.length) syncs.push(new Sync()); }
+  }
+  for(let i=later.length-1;i>=0;i--){ later[i].t-=dt; if(later[i].t<=0){ const f=later[i].fn; later.splice(i,1); f(); } }
+  runs.forEach(r=>r.update(dt)); runs=runs.filter(r=>!r.done);
+  syncs.forEach(s=>s.update(dt)); syncs=syncs.filter(s=>!s.done);
+  for(let i=effects.length-1;i>=0;i--){ const e=effects[i]; e.t+=dt; const q=Math.min(1,e.t/e.dur);
+    if(e.custom){ e.upd(q); if(q>=1){ e.end(); effects.splice(i,1); } continue; }
+    e.m.scale.setScalar(.3+(e.r1-.3)*ease(q)); e.m.material.opacity=e.op*(1-q);
+    if(q>=1){ scene.remove(e.m); e.m.material.dispose(); effects.splice(i,1); } }
+
+  allNodes.forEach(n=>{
+    n.glow=Math.max(0,n.glow-dt*.75); const g=n.glow;
+    if(n.type==="decision" && n.flash && g>0){ tmpC.copy(n.base).lerp(n.flash,Math.min(1,g*1.5)); n.mat.color.copy(tmpC); n.mat.emissive.copy(tmpC); }
+    else { n.mat.color.copy(n.base); n.mat.emissive.copy(n.base); }
+    n.mat.emissiveIntensity=.12+g*.95; n.mesh.scale.setScalar(n.size*(1+g*.4));
+  });
+  INDUSTRIES.forEach(D=>{
+    D.edges.forEach((e,j)=>{ e.glow=Math.max(0,e.glow-dt*.8); tmpC.copy(P.edge).lerp(P["edge-hot"],e.glow); const o=j*6;
+      D.edgeCol[o]=D.edgeCol[o+3]=tmpC.r; D.edgeCol[o+1]=D.edgeCol[o+4]=tmpC.g; D.edgeCol[o+2]=D.edgeCol[o+5]=tmpC.b; });
+    D.edgeGeo.attributes.color.needsUpdate=true;
+    D.cloudGlow=Math.max(0,D.cloudGlow-dt*.7);
+    D.cloudMat.emissiveIntensity=.3+D.cloudGlow*1.2; D.cloudMesh.scale.setScalar(1+D.cloudGlow*.25);
+  });
+  allDevices.forEach(dev=>{
+    if(dev.move){ const m=dev.move; m.a+=dt*m.w; dev.group.position.set(dev.D.c.x+Math.cos(m.a)*m.r,0,dev.D.c.z+Math.sin(m.a)*m.r); dev.group.rotation.y=-m.a-Math.PI/2; }
+    dev.glow=Math.max(0,dev.glow-dt*.8);
+    if(dev.flash && dev.glow>0){ tmpC.copy(P.screen).lerp(dev.flash,Math.min(1,dev.glow*1.4)); dev.mat.color.copy(tmpC); dev.mat.emissive.copy(tmpC); }
+    else { dev.mat.color.copy(P.screen); dev.mat.emissive.copy(P.screen); }
+    dev.mat.emissiveIntensity=.15+dev.glow*1.1;
+  });
+  ont.glow=Math.max(0,ont.glow-dt*.6);
+  if(!reduceMotion){ ont.wire.rotation.y+=dt*.2; }
+  ont.shapes.forEach(m=>{ const a=m.userData.a+(reduceMotion?0:performance.now()*.00025); m.position.set(Math.cos(a)*1.7, Math.sin(a*2)*.3, Math.sin(a)*1.7); });
+  ont.wire.scale.setScalar(1+ont.glow*.15);
+
+  updateRail();
+  if(fly){ fly.t+=rdt; const q=ease(Math.min(1,fly.t/fly.dur)); camera.position.lerpVectors(fly.p0,fly.p1,q); controls.target.lerpVectors(fly.t0,fly.t1,q); if(fly.t>=fly.dur) fly=null; }
+  controls.update();
+  renderer.render(scene,camera); labelRenderer.render(scene,camera);
+}
+requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
